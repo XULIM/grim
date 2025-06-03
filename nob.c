@@ -1,5 +1,5 @@
 #define NOB_IMPLEMENTATION
-#include "nob.h"
+#include "src/nob.h"
 
 #define BUILD_FOLDER "build/"
 #define SRC_FOLDER "src/"
@@ -14,11 +14,10 @@ int main(int argc, char **argv)
 
     Nob_Cmd cmd = {0};
 
-    nob_log(NOB_INFO, "info msg!");
-
     // Debug build
     nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-o", BUILD_FOLDER"main",
-            SRC_FOLDER"main.c", SRC_FOLDER"arena.c", "-msse4.2", "-g");
+            SRC_FOLDER"main.c", SRC_FOLDER"arena.c", SRC_FOLDER"ppmproc.c",
+            "-msse4.2", "-g");
 
     if (!nob_cmd_run_sync(cmd))
         return 1;

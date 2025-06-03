@@ -1,3 +1,5 @@
+#define NOB_IMPLEMENTATION
+#include "nob.h"
 #include "allat.h"
 #include "arena.h"
 #include "ppmgen.h"
@@ -49,35 +51,25 @@ U0 test(U0)
 
 I32 main(U0)
 {
-    U8 *triplets;
-    U64 i, offset, *size;
+    PPMImage *ppmimage;
     Arena *arena;
-
-    // generate new ppm
-    if (ppm_gen("new.ppm") != 0)
-    {
-        return -1;
-    }
 
     // reserve 10 MB of space
     arena = arena_alloc(10 * 1024 * 1024);
 
-    size = new(arena, U64, 1, NOZERO);
+    ppmimage = ppm_read(IMG_FOLDER"new.ppm", arena);
 
-    offset = ppm_read(IMG_FOLDER"test.ppm", size, arena);
-    if (offset == 0)
+    printf("width: %lu\nheight: %lu\nmax_color: %lu\n",
+            ppmimage->width,
+            ppmimage->height,
+            ppmimage->max_color);
+
+    for (U64 i = 0; i < ppmimage->width * ppmimage->height; i++)
     {
-        fprintf(stderr, "AHHHHHHHHHHH\n");
-        return 0;
-    }
-
-    printf("size: %"PRIU64"\n", *size);
-
-    triplets = (U8*)(arena->buf)+offset;
-    for (i = 0; i < *size; i += 3)
-    {
-        printf("%"PRIU8" %"PRIU8" %"PRIU8"\n",
-                triplets[i], triplets[i+1], triplets[i+2]);
+        printf("%hhu %hhu %hhu\n",
+                ppmimage->pixels[i].r,
+                ppmimage->pixels[i].g,
+                ppmimage->pixels[i].b);
     }
 
     arena_release(arena);

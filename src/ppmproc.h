@@ -13,6 +13,7 @@ typedef struct
 
 typedef struct
 {
+    C8 header[2];
     U64 width, height;
     U64 max_color;
     Pixel *pixels;

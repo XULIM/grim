@@ -1,3 +1,4 @@
 *
 !src/
+!src/ppmproc.c
 !nob.c

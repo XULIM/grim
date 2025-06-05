@@ -7,8 +7,8 @@
 
 #define NOB_IMPLEMENTATION
 
-#define IS_VALID_PIXEL(p, h)\
-    ( (p) > (h) ? 0 : 1 )
+#define IS_VALID_PIXEL(p, maxval)\
+    ( ( (p.r) > (maxval) || (p.g) > (maxval) || (p.b) > (maxval) ) ? 0 : 1 )
 
 PPMImage* ppm_read(const C8 *restrict path, Arena *restrict arena)
 {
@@ -67,7 +67,10 @@ PPMImage* ppm_read(const C8 *restrict path, Arena *restrict arena)
     // Read and store Pixel information
     for (i = 0; i < width * height; i++)
     {
-        if (fscanf(file, "%"SCNU8" %"SCNU8" %"SCNU8, &r, &g, &b) != 3)
+        if (fscanf(file, "%"SCNU8" %"SCNU8" %"SCNU8,
+                    &ppmimage->pixels[i].r,
+                    &ppmimage->pixels[i].g,
+                    &ppmimage->pixels[i].b) != 3)
         {
             // Failed to read Pixel color triplets
             nob_log(NOB_ERROR, "error after %"PRIU64" triplets.", i);
@@ -77,9 +80,7 @@ PPMImage* ppm_read(const C8 *restrict path, Arena *restrict arena)
         }
 
         // Invalid pixel triplet (out of range)
-        if (!IS_VALID_PIXEL(r, maxval) ||
-                !IS_VALID_PIXEL(g, maxval) ||
-                !IS_VALID_PIXEL(b, maxval))
+        if (!IS_VALID_PIXEL(ppmimage->pixels[i], maxval))
         {
             nob_log(NOB_ERROR,
                     "invalid pixel at %"PRIU64" (pixel color out of range).",
@@ -88,10 +89,6 @@ PPMImage* ppm_read(const C8 *restrict path, Arena *restrict arena)
             fclose(file);
             return NULL;
         }
-
-        ppmimage->pixels[i].r = r;
-        ppmimage->pixels[i].g = g;
-        ppmimage->pixels[i].b = b;
     }
 
     fclose(file);

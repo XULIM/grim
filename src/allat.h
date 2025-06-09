@@ -18,6 +18,7 @@ typedef int32_t I32;
 typedef uint32_t U32;
 typedef int64_t I64;
 typedef uint64_t U64;
+typedef float F32;
 typedef double F64;
 typedef long double F128;
 
@@ -29,6 +30,7 @@ typedef long double F128;
 #define SCNU32 SCNu32
 #define SCNI64 SCNd64
 #define SCNU64 SCNu64
+#define SCNF32 "f"
 #define SCNF64 "lf"
 #define SCNF128 "Lf"
 
@@ -40,6 +42,7 @@ typedef long double F128;
 #define PRIU32 PRIu32
 #define PRII64 PRId64
 #define PRIU64 PRIu64
+#define PRIF32 "f"
 #define PRIF64 "lf"
 #define PRIF128 "Lf"
 

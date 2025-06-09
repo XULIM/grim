@@ -10,11 +10,11 @@ typedef enum flags
     MEMZERO = 1
 } Flags;
 
-typedef struct arena
+typedef struct arena // 24 byte wide
 {
-    C8 *buf;
     U64 size;
     U64 offset;
+    C8 *buf;
 } Arena;
 
 /* == Create / Destory == */

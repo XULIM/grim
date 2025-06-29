@@ -8,15 +8,11 @@
 
 #define NOB_IMPLEMENTATION
 
-#define IS_VALID_PIXEL(p, maxval)\
-    ( ( (p.r) > (maxval) || (p.g) > (maxval) || (p.b) > (maxval) ) ? 0 : 1 )
-
-// Allow the functions to manage memory on arena,
-// or keep it modular?
+// Passing in arenas because it is easier to reset on error.
 
 PPMImage* ppm_read(const C8 *restrict path, Arena *restrict arena)
 {
-    U64 original_offset, i;
+    U64 original_offset, i, size;
     FILE *file;
     PPMImage *ppmimage;
     U16 width, height, maxval;
@@ -67,8 +63,10 @@ PPMImage* ppm_read(const C8 *restrict path, Arena *restrict arena)
     ppmimage->max_color = maxval;
     ppmimage->pixels = new(arena, Pixel, width * height, NOZERO);
 
+    size = width * height;
+
     // Read and store Pixel information
-    for (i = 0; i < width * height; i++)
+    for (i = 0; i < size; i++)
     {
         if (fscanf(file, "%"SCNU8" %"SCNU8" %"SCNU8,
                     &ppmimage->pixels[i].r,
@@ -96,6 +94,38 @@ PPMImage* ppm_read(const C8 *restrict path, Arena *restrict arena)
 
     fclose(file);
     return ppmimage;
+}
+
+I32 ppm_write(const C8 *restrict path, PPMImage *ppmimage)
+{
+    U64 i, size;
+    FILE *file;
+
+
+    file = fopen(path, "w");
+    if (file == NULL)
+    {
+        nob_log(NOB_ERROR, "could not open file given path: %s.", path);
+        fclose(file);
+        return -1;
+    }
+
+    fprintf(file, "%2s\n%"PRIU64" %"PRIU64"\n%"PRIU64"\n",
+            ppmimage->header,
+            ppmimage->width,
+            ppmimage->height,
+            ppmimage->max_color);
+
+    size = ppmimage->width * ppmimage->height;
+    for (i = 0; i < size; i++)
+    {
+        fprintf(file, "%"PRIU8" %"PRIU8" %"PRIU8"\n",
+                ppmimage->pixels[i].r,
+                ppmimage->pixels[i].g,
+                ppmimage->pixels[i].b);
+    }
+
+    return 0;
 }
 
 PPMImage* ppm_grayscale(PPMImage *image, Arena *arena)

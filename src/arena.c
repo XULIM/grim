@@ -1,7 +1,5 @@
 #include "arena.h"
 
-/* Creates an arena of the specified size.
- * Returns the arena allocated on success, NULL otherwise. */
 Arena *arena_alloc(U64 size)
 {
     Arena *arena;
@@ -26,7 +24,6 @@ Arena *arena_alloc(U64 size)
     return arena;
 }
 
-/* Releases the arena allocated. */
 U0 arena_release(Arena *arena)
 {
     if (arena)
@@ -36,12 +33,6 @@ U0 arena_release(Arena *arena)
     }
 }
 
-/* Allocates a memory in arena given the alignment and size.
- * The memory is allocated from the closest offset given the alignment.
- * Flags:
- * - MEMZERO: zeroes the allocated memory.
- * Returns the address of the allocated memory on success, NULL otherwise.
- * */
 U0 *arena_push(Arena *arena, U64 alignment, U64 size, Flags flags)
 {
     U64 aligned_offset;
@@ -60,13 +51,6 @@ U0 *arena_push(Arena *arena, U64 alignment, U64 size, Flags flags)
         : arena->buf + aligned_offset;
 }
 
-/* Pops a certain size out of arena.
- *
- * Flags:
- * - NOZERO: does not zero the memory freed.
- *
- * Returns a pointer to the newly freed buffer.
- */
 U0 *arena_pop(Arena *arena, U64 size, Flags flags)
 {
     if (!arena)

@@ -1,6 +1,7 @@
 #include "nob.h"
 #include "allat.h"
 #include "arena.h"
+#include "pixel.h"
 #include "ppmproc.h"
 
 #include <string.h>
@@ -128,6 +129,8 @@ I32 ppm_write(const C8 *restrict path, PPMImage *ppmimage)
     return 0;
 }
 
+// TODO: check if it supports SIMD, implement non-SIMD accelerated
+// version if not supported. Implement with AVX if supported.
 PPMImage* ppm_grayscale(PPMImage *image, Arena *arena)
 {
     __m128 COEFF_R, COEFF_G, COEFF_B, r, g, b;

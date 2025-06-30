@@ -1,3 +1,5 @@
+#include "allat.h"
+#include "arena.h"
 #include "pixel.h"
 
 Pixel* G(Arena *arena, Pixel *pixels, F32 sigma, I32 width, I32 height)
@@ -61,7 +63,7 @@ Pixel* G(Arena *arena, Pixel *pixels, F32 sigma, I32 width, I32 height)
             temp[y * width + x].b = fb;
         }
     }
-
+    
     // vertical pass
     for (y = 0; y < height; y++)
     {

@@ -1,12 +1,6 @@
 #ifndef PPMPROC_H
 #define PPMPROC_H
 
-// TODO: use U16 and add alpha channel
-typedef struct
-{
-    U8 r, g, b;
-} Pixel;
-
 typedef struct // 40 byte wide on 64-bit
 {
     U64 width, height;
@@ -30,8 +24,5 @@ I32 ppm_write(const C8 *restrict path, PPMImage *image);
  * Grayscales the PPMImage struct, allocates a new PPMImage struct on arena and
  * returns a pointer to it on success. */
 PPMImage* ppm_grayscale(PPMImage *image, Arena *arena);
-
-#define IS_VALID_PIXEL(p, maxval)\
-    ( ( (p.r) > (maxval) || (p.g) > (maxval) || (p.b) > (maxval) ) ? 0 : 1 )
 
 #endif

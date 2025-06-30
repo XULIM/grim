@@ -22,6 +22,7 @@ int main(int argc, char **argv)
     */
 
 
+    // main
     nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-o", BUILD_FOLDER"main.o",
             "-c", SRC_FOLDER"main.c", "-g", "-lm");
     if (!nob_cmd_run_sync_and_reset(&cmd))
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    // arena
     nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-o", BUILD_FOLDER"arena.o",
             "-c", SRC_FOLDER"arena.c", "-g");
     if (!nob_cmd_run_sync_and_reset(&cmd))
@@ -38,6 +40,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    // ppmproc
     nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-o",
             BUILD_FOLDER"ppmproc.o", "-c", SRC_FOLDER"ppmproc.c", "-g",
             "-msse4.2");
@@ -47,9 +50,19 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-o",
+            BUILD_FOLDER"pixel.o", "-c", SRC_FOLDER"pixel.c", "-g");
+    if (!nob_cmd_run_sync_and_reset(&cmd))
+    {
+        nob_log(NOB_ERROR, "failed to compile pixel.c");
+        return 1;
+    }
+
+    // link
     nob_cmd_append(&cmd, "cc", "-o", BUILD_FOLDER"main",
             BUILD_FOLDER"main.o", BUILD_FOLDER"arena.o",
-            BUILD_FOLDER"ppmproc.o", "-lm");
+            BUILD_FOLDER"ppmproc.o", BUILD_FOLDER"pixel.o",
+            "-lm");
     if (!nob_cmd_run_sync_and_reset(&cmd))
     {
         nob_log(NOB_ERROR, "failed to compile link files");
